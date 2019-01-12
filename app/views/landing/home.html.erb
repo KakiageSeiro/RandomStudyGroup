@@ -1,3 +1,8 @@
-<h1>Landing#home</h1>
-<p>Welcam to the world</p>
+<!--<h1>Landing#home</h1>-->
+<!--<p>Welcam to the world</p>-->
 <%#= @wiki %>
+
+<!--リスト形式で表示-->
+<% @renderTitleMap.each do |p| -%>
+  <li><%= p %></li>
+<% end -%>
