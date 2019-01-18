@@ -1,5 +1,11 @@
 class LandingController < ApplicationController
+
+  require 'logger'
+
   def home
+
+    log = Logger.new('/tmp/log')
+
     # @wiki = reqestRandomWiki
     result = reqestRandom
     # render :json => result["results_returned"]
@@ -8,6 +14,11 @@ class LandingController < ApplicationController
 
     titleMap = result["events"].map { |event|
       event["title"]
+    }
+
+    # ブラウザで実行するとAPIからデータ取得できていない現象調査用ログ出力
+    titleMap.map { |element|
+      log.info('◇◇◇titleMap◇◇◇' + element + '◇◇◇')
     }
 
     # render :json => titleMap
@@ -44,7 +55,7 @@ class LandingController < ApplicationController
     # )
     params = URI.encode_www_form(
         {
-            keyword: 'ruby',
+            keyword: 'Java',
 
             # TODO:実行時の月から３ヶ月？ぐらいを自動で指定するように変更する
             ym: '201901' # イベント開催年月
