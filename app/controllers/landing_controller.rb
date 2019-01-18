@@ -4,16 +4,28 @@ class LandingController < ApplicationController
 
   def home
 
-    log = Logger.new('/tmp/log')
+    log = Logger.new('/Users/yuta/RubymineProjects/RandomWiki/tmp/log')
 
-    # @wiki = reqestRandomWiki
-    result = reqestRandom
-    # render :json => result["results_returned"]
+    # APIからデータ取得
+    # result = reqestRandom
+    # テスト用ダミーデータ（スタイル違反はでる）
+    array = {}
+    array['events'] = [
+        {
+            'title'     => 'テストタイトル１'
+        },
+        {
+            'title'     => 'テストタイトル２'
+        },
+        {
+            'title'     => 'テストタイトル３'
+        }
+    ]
+    result = array
 
-    # render :json => result["events"]
-
-    titleMap = result["events"].map { |event|
-      event["title"]
+    # タイトルのみ抽出
+    titleMap = result['events'].map { |event|
+      event['title']
     }
 
     # ブラウザで実行するとAPIからデータ取得できていない現象調査用ログ出力
@@ -23,6 +35,7 @@ class LandingController < ApplicationController
 
     # render :json => titleMap
 
+    # Viewで利用するためにローカル変数に追加
     @renderTitleMap = titleMap
 
   end
