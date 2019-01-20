@@ -2,7 +2,60 @@
 <!--<p>Welcam to the world</p>-->
 <%#= @wiki %>
 
-<!--リスト形式で表示-->
-<% @renderTitleMap.each do |p| -%>
-  <li><%= p %></li>
-<% end -%>
+<!--表示用div-->
+<div id="myplace"></div>
+
+<!--リロードごとにリストから一件のみ表示-->
+<script type="text/javascript">
+    var lists=[
+        <% @renderTitleMap.each   do |p| -%>
+          '<li id="title"><%= p %></li>',
+        <% end -%>
+    ];
+
+    var rNo = Math.floor(Math.random() * lists.length);
+    document.getElementById('myplace').innerHTML = lists[rNo];
+
+    // ページ読み込み時
+    window.onload = function (){
+        //------------------------------
+        // 一定時間ごとにリロード
+        //------------------------------
+        // 一定時間ごとにリロードするためのタイマー（６０秒）
+        tm = setInterval("location.reload()",60000);
+
+        //------------------------------
+        // 通知設定
+        //------------------------------
+        // 通知文言
+        var notificationStr = document.getElementById('myplace').innerText
+        // Notification対応しているかどうか
+        if (window.Notification) {
+            // alert('Notificationは有効です');
+
+            // Permissionの確認
+            if (Notification.permission === 'granted') {
+                // 許可されている場合はNotificationで通知
+                // alert('通知許可されています');
+                var n = new Notification(notificationStr);
+            } else if (Notification.permission === 'denied') {
+                alert('通知拒否されています');
+            } else if (Notification.permission === 'default') {
+                alert('通知可能か不明です');
+                // 許可が取れていない場合はNotificationの許可を取る
+                Notification.requestPermission(function(result) {
+                    if (result === 'denied') {
+                        alert('リクエスト結果：通知許可されませんでした');
+                    } else if (result === 'default') {
+                        alert('リクエスト結果：通知可能か不明です');
+                    } else if (result === 'granted') {
+                        alert('リクエスト結果：通知許可されました！！');
+                        var n = new Notification(notificationStr);
+                    }
+                })
+            }
+        } else {
+            alert('Notificationは無効です');
+        }
+    }
+</script>
