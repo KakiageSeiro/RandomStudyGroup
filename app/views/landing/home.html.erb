@@ -5,57 +5,82 @@
 <!--表示用div-->
 <div id="myplace"></div>
 
+<!--TODO: CDNから通知用ライブラリ取得しているので、あとでプロジェクトに含める-->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.7/push.min.js"></script>
+
 <!--リロードごとにリストから一件のみ表示-->
 <script type="text/javascript">
+    // イベント情報リストを作成
     var lists=[
         <% @renderTitleMap.each   do |p| -%>
           '<li id="title"><%= p %></li>',
         <% end -%>
     ];
 
-    var rNo = Math.floor(Math.random() * lists.length);
-    document.getElementById('myplace').innerHTML = lists[rNo];
+    // イベント更新処理
+    function eventReload(){
+        var rNo = Math.floor(Math.random() * lists.length);
+        document.getElementById('myplace').innerHTML = lists[rNo];
+        notification();
+    }
+
+    // 通知表示処理
+    function notification(){
+        if (Push.Permission.has()) {
+            // 通知文言を設定
+            var notificationStr = document.getElementById('myplace').innerText
+
+            Push.create('勉強会情報', {
+                body:    notificationStr,
+                // icon:    './images/icon.png', // Image path displayed right side
+                timeout: 30 * 1000,
+                onClick: function () {
+                    location.href = 'https://www.google.co.jp'
+
+                    // TODO:タブをアクティブにしたいが動かない
+                    // window.blur();
+                    // window.focus();
+
+
+                    this.close();
+                }
+            });
+        }
+    }
+
+    // 通知許可をユーザーに求める
+    function notificationPermission(){
+        // 通知の許可をページ読み込み３秒後にポップアップで確認
+        setTimeout(function () {
+            Push.Permission.request(onGranted, onDenied);
+        }, 3 * 1000);
+
+        // 通知許可時コールバック処理
+        function onGranted() {
+            console.log('Granted!');
+        }
+
+        // 通知拒否時コールバック処理
+        function onDenied() {
+            ga('send', 'event', 'browser-push', 'denied', 'top', 1);
+        }
+    }
 
     // ページ読み込み時
     window.onload = function (){
-        //------------------------------
-        // 一定時間ごとにリロード
-        //------------------------------
-        // 一定時間ごとにリロードするためのタイマー（６０秒）
-        tm = setInterval("location.reload()",60000);
 
-        //------------------------------
-        // 通知設定
-        //------------------------------
-        // 通知文言
-        var notificationStr = document.getElementById('myplace').innerText
-        // Notification対応しているかどうか
-        if (window.Notification) {
-            // alert('Notificationは有効です');
+        // 一定時間ごとにページをリロードするためのタイマー（600秒）
+        tm = setInterval("location.reload()",600000);
 
-            // Permissionの確認
-            if (Notification.permission === 'granted') {
-                // 許可されている場合はNotificationで通知
-                // alert('通知許可されています');
-                var n = new Notification(notificationStr);
-            } else if (Notification.permission === 'denied') {
-                alert('通知拒否されています');
-            } else if (Notification.permission === 'default') {
-                alert('通知可能か不明です');
-                // 許可が取れていない場合はNotificationの許可を取る
-                Notification.requestPermission(function(result) {
-                    if (result === 'denied') {
-                        alert('リクエスト結果：通知許可されませんでした');
-                    } else if (result === 'default') {
-                        alert('リクエスト結果：通知可能か不明です');
-                    } else if (result === 'granted') {
-                        alert('リクエスト結果：通知許可されました！！');
-                        var n = new Notification(notificationStr);
-                    }
-                })
-            }
-        } else {
-            alert('Notificationは無効です');
-        }
+        // 一定時間ごとにイベントを切り替え（60秒）
+        eventInfo = setInterval("eventReload()",60000);
+
+        // 通知許可をユーザーに求める
+        notificationPermission();
+
+        // イベント情報表示と通知
+        eventReload();
     }
 </script>
+
+

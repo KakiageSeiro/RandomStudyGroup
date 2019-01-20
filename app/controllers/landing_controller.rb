@@ -7,7 +7,6 @@ class LandingController < ApplicationController
     log = Logger.new('/Users/yuta/RubymineProjects/RandomWiki/tmp/log')
 
     # APIからデータ取得
-    # result = reqestRandom
     # テスト用ダミーデータ（スタイル違反はでる）
     array = {}
     array['events'] = [
@@ -19,9 +18,33 @@ class LandingController < ApplicationController
         },
         {
             'title'     => 'テストタイトル３'
+        },
+        {
+            'title'     => 'テストタイトル４'
+        },
+        {
+            'title'     => 'テストタイトル５'
+        },
+        {
+            'title'     => 'テストタイトル６'
+        },
+        {
+            'title'     => 'テストタイトル７'
+        },
+        {
+            'title'     => 'テストタイトル８'
+        },
+        {
+            'title'     => 'テストタイトル９'
+        },
+        {
+            'title'     => 'テストタイトル１０'
         }
     ]
     result = array
+
+    # connpassAPIから情報取得
+    # result = reqestRandom
 
     # タイトルのみ抽出
     titleMap = result['events'].map { |event|
