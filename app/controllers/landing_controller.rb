@@ -8,39 +8,49 @@ class LandingController < ApplicationController
 
     # APIからデータ取得
     # テスト用ダミーデータ（スタイル違反はでる）
-    dummy = {}
-    dummy['events'] = [
+    # dummy = {}
+    dummy = {'events' => [
         {
-            'title'     => 'テストタイトル１'
+            'title'     => 'テストタイトル１',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル２'
+            'title'     => 'テストタイトル２',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル３'
+            'title'     => 'テストタイトル３',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル４'
+            'title'     => 'テストタイトル４',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル５'
+            'title'     => 'テストタイトル５',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル６'
+            'title'     => 'テストタイトル６',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル７'
+            'title'     => 'テストタイトル７',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル８'
+            'title'     => 'テストタイトル８',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル９'
+            'title'     => 'テストタイトル９',
+            'event_url' => 'https://www.yahoo.co.jp/'
         },
         {
-            'title'     => 'テストタイトル１０'
+            'title'     => 'テストタイトル１０',
+            'event_url' => 'https://www.yahoo.co.jp/'
         }
-    ]
+    ]}
     result = dummy
 
     # connpassAPIから情報取得
@@ -56,10 +66,10 @@ class LandingController < ApplicationController
       log.info('◇◇◇titleMap◇◇◇' + element + '◇◇◇')
     }
 
-    # render :json => titleMap
-
     # Viewで利用するためにローカル変数に追加
     @renderTitleMap = titleMap
+    @renderEvent = result['events']
+
 
   end
 
@@ -91,7 +101,8 @@ class LandingController < ApplicationController
     # )
     params = URI.encode_www_form(
         {
-            keyword: 'Java',
+            keyword_or: 'DB,Ruby',
+            # 輪読会
 
             # TODO:実行時の月から３ヶ月？ぐらいを自動で指定するように変更する
             ym: '201901' # イベント開催年月
@@ -108,6 +119,9 @@ class LandingController < ApplicationController
     # uri.port   => 4567
     # uri.path   => ''
     # uri.query  => 'param1=foo&param2=bar+baz&param3=%E3%81%82'
+    # 組み立てるURL例
+    # https://connpass.com/api/v1/event/?
+    #
     url = "connpass.com/api/v1/event/?"
     httpsUri = URI.parse("https://" + url + "#{params}")
 
@@ -117,24 +131,24 @@ class LandingController < ApplicationController
     # httpsリクエストを送信
     result = doHttpsReqest(httpsUri)
 
-    # 301のエラーが返却された場合再実行
-    if result::code == '301'
-      # リダイレクトが存在する場合
-      if !result['Location'].nil?
-
-        # 前回実行したリクエスト結果に含まれるリダイレクト先を設定
-        uri = URI.parse(result['Location'])
-
-        # TODO:ここでhttp or httpsの判定し、結果によって呼び出しメソッドを変更する
-
-        # リクエストを送信
-        result = doHttpsReqest(uri)
-
-      else
-        # httpsで再実行
-        result = doHttpReqest(httpsUri)
-      end
-    end
+    # # 301のエラーが返却された場合再実行
+    # if result::code == '301'
+    #   # リダイレクトが存在する場合
+    #   if !result['Location'].nil?
+    #
+    #     # 前回実行したリクエスト結果に含まれるリダイレクト先を設定
+    #     uri = URI.parse(result['Location'])
+    #
+    #     # TODO:ここでhttp or httpsの判定し、結果によって呼び出しメソッドを変更する
+    #
+    #     # リクエストを送信
+    #     result = doHttpsReqest(uri)
+    #
+    #   else
+    #     # httpsで再実行
+    #     result = doHttpReqest(httpsUri)
+    #   end
+    # end
   end
 
   # HTTPSリクエスト送信処理

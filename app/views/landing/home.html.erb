@@ -3,7 +3,7 @@
 <%#= @wiki %>
 
 <!--表示用div-->
-<div id="myplace"></div>
+<div id="eventInfo"></div>
 
 <!--TODO: CDNから通知用ライブラリ取得しているので、あとでプロジェクトに含める-->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.7/push.min.js"></script>
@@ -11,16 +11,17 @@
 <!--リロードごとにリストから一件のみ表示-->
 <script type="text/javascript">
     // イベント情報リストを作成
+    // Ruby側でのhashはerbでは配列に変換されている
     var lists=[
-        <% @renderTitleMap.each   do |p| -%>
-          '<li id="title"><%= p %></li>',
+        <% @renderEvent.each   do |p| -%>
+          '<li ><%= p['title'] %> <a href="<%= p['event_url'] %>" target="_blank" id="link">リンク</a></li>',
         <% end -%>
     ];
 
     // イベント更新処理
     function eventReload(){
         var rNo = Math.floor(Math.random() * lists.length);
-        document.getElementById('myplace').innerHTML = lists[rNo];
+        document.getElementById('eventInfo').innerHTML = lists[rNo];
         notification();
     }
 
@@ -28,18 +29,16 @@
     function notification(){
         if (Push.Permission.has()) {
             // 通知文言を設定
-            var notificationStr = document.getElementById('myplace').innerText
+            var notificationStr = document.getElementById('eventInfo').innerText;
+            var linkUrl = document.getElementById('link').getAttribute('href');
 
             Push.create('勉強会情報', {
                 body:    notificationStr,
                 // icon:    './images/icon.png', // Image path displayed right side
                 timeout: 30 * 1000,
                 onClick: function () {
-                    location.href = 'https://www.google.co.jp'
-
-                    // TODO:タブをアクティブにしたいが動かない
-                    // window.blur();
-                    // window.focus();
+                    // 通知クリックでconnpassのページを新規タブで開く
+                    window.open(linkUrl,'_brank')
 
                     this.close();
                 }
