@@ -1,8 +1,12 @@
-<!--<h1>Landing#home</h1>-->
-<!--<p>Welcam to the world</p>-->
-<%#= @wiki %>
+<h1 id="topTitle">勉強会エンカウント</h1>
+<div id="pageInfoSummary">まだ見ぬ勉強会を見つけよう。</div>
+<div id="pageInfoDetail">
+  勉強会エンカウントは、自分が検索しないような勉強会を見つけるためのサービスです。
+  ランダムで勉強会の情報を表示します。
+  ブラウザの通知を許可することで、別の作業をしながらまだ見ぬ勉強会と出会うことができます。
+</div>
 
-<!--表示用div-->
+<!--イベント表示用div-->
 <div id="eventInfo"></div>
 
 <!--TODO: CDNから通知用ライブラリ取得しているので、あとでプロジェクトに含める-->
@@ -13,8 +17,18 @@
     // イベント情報リストを作成
     // Ruby側でのhashはerbでは配列に変換されている
     var lists=[
-        <% @renderEvent.each   do |p| -%>
-          '<li ><%= p['title'] %> <a href="<%= p['event_url'] %>" target="_blank" id="link">リンク</a></li>',
+        <%
+          @renderEvent.each   do |p|
+          # タイトルがnilの場合はエラーメッセージを表示
+          if !p['title'].nil? then
+            titleStr = p['title']
+            linkStr = 'イベントページを新しいタブで開く'
+          else
+             titleStr = '情報取得に失敗しました。ページを再読み込みしてください。'
+             linkStr = ''
+          end
+        -%>
+          '<li ><%= titleStr %>  <a href="<%= p['event_url'] %>" target="_blank" id="link"><%= linkStr %> </a></li>',
         <% end -%>
     ];
 

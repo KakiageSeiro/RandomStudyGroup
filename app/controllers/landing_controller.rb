@@ -54,21 +54,23 @@ class LandingController < ApplicationController
     result = dummy
 
     # connpassAPIから情報取得
-    # result = reqestRandom
+    result = reqestRandom
 
-    # タイトルのみ抽出
-    titleMap = result['events'].map { |event|
-      event['title']
-    }
-
-    # ブラウザで実行するとAPIからデータ取得できていない現象調査用ログ出力
-    titleMap.map { |element|
-      log.info('◇◇◇titleMap◇◇◇' + element + '◇◇◇')
-    }
+    # # タイトルのみ抽出
+    # titleMap = result['events'].map { |event|
+    #   event['title']
+    # }
+    #
+    # # ブラウザで実行するとAPIからデータ取得できていない現象調査用ログ出力
+    # titleMap.map { |element|
+    #   log.info('◇◇◇titleMap◇◇◇' + element + '◇◇◇')
+    # }
 
     # Viewで利用するためにローカル変数に追加
-    @renderTitleMap = titleMap
-    @renderEvent = result['events']
+    # @renderTitleMap = titleMap
+    @renderEvent = ['データ取得失敗']
+    # resultにデータがハッシュで格納されていない場合、代入をしない
+    @renderEvent = result['events'] if result.try(:[],'events').present?
 
 
   end
@@ -101,11 +103,13 @@ class LandingController < ApplicationController
     # )
     params = URI.encode_www_form(
         {
-            keyword_or: 'DB,Ruby',
+            keyword_or: 'DB,Ruby,Rails,Classi',
             # 輪読会
 
             # TODO:実行時の月から３ヶ月？ぐらいを自動で指定するように変更する
-            ym: '201901' # イベント開催年月
+            # ym: '201901', # イベント開催年月
+            ymd: '20190128,20190129,20190130,20190131,20190201,20190203',
+            count: '49'
         }
     )
 
@@ -124,9 +128,6 @@ class LandingController < ApplicationController
     #
     url = "connpass.com/api/v1/event/?"
     httpsUri = URI.parse("https://" + url + "#{params}")
-
-    # httpリクエストを送信
-    # result = doHttpReqest(httpUri)
 
     # httpsリクエストを送信
     result = doHttpsReqest(httpsUri)
@@ -168,12 +169,12 @@ class LandingController < ApplicationController
       response = http.start do |http|
         # Net::HTTP.open_timeout=で接続時に待つ最大秒数の設定をする
         # タイムアウト時はTimeoutError例外が発生
-        http.open_timeout = 5
+        http.open_timeout = 30
 
         # Net::HTTPS.read_timeout=で読み込み1回でブロックして良い最大秒数の設定をする
         # デフォルトは60秒
         # タイムアウト時はTimeoutError例外が発生
-        http.read_timeout = 10
+        http.read_timeout = 100
 
         # Net::HTTP#getでレスポンスの取得
         # 返り値はNet::HTTPResponseのインスタンス
