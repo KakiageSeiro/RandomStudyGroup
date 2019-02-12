@@ -4,7 +4,7 @@ class LandingController < ApplicationController
 
   def home
 
-    log = Logger.new('/Users/yuta/RubymineProjects/RandomWiki/tmp/log')
+    log = Logger.new('/Users/yuta/RubymineProjects/RandomStudyGroup/tmp/log')
 
     # APIからデータ取得
     # テスト用ダミーデータ（スタイル違反はでる）
