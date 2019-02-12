@@ -103,12 +103,14 @@ class LandingController < ApplicationController
     # )
     params = URI.encode_www_form(
         {
-            keyword_or: 'DB,Ruby,Rails,Classi',
+            # keyword_or: 'DB,Ruby,Rails,Classi',
             # 輪読会
 
             # TODO:実行時の月から３ヶ月？ぐらいを自動で指定するように変更する
             # ym: '201901', # イベント開催年月
-            ymd: '20190128,20190129,20190130,20190131,20190201,20190203',
+            ymd: '20190209,
+                  20190210,
+                  20190211',
             count: '49'
         }
     )
@@ -169,12 +171,12 @@ class LandingController < ApplicationController
       response = http.start do |http|
         # Net::HTTP.open_timeout=で接続時に待つ最大秒数の設定をする
         # タイムアウト時はTimeoutError例外が発生
-        http.open_timeout = 30
+        http.open_timeout = 60
 
         # Net::HTTPS.read_timeout=で読み込み1回でブロックして良い最大秒数の設定をする
         # デフォルトは60秒
         # タイムアウト時はTimeoutError例外が発生
-        http.read_timeout = 100
+        http.read_timeout = 120
 
         # Net::HTTP#getでレスポンスの取得
         # 返り値はNet::HTTPResponseのインスタンス

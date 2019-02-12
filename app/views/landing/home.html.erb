@@ -1,3 +1,4 @@
+<html lang="ja">
 <h1 id="topTitle">勉強会エンカウント</h1>
 <div id="pageInfoSummary">まだ見ぬ勉強会を見つけよう。</div>
 <div id="pageInfoDetail">
@@ -26,6 +27,7 @@
           else
              titleStr = '情報取得に失敗しました。ページを再読み込みしてください。'
              linkStr = ''
+             location.reload();
           end
         -%>
           '<li ><%= titleStr %>  <a href="<%= p['event_url'] %>" target="_blank" id="link"><%= linkStr %> </a></li>',
