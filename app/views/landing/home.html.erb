@@ -10,9 +10,6 @@
 <!--イベント表示用div-->
 <div id="eventInfo"></div>
 
-<!--TODO: CDNから通知用ライブラリ取得しているので、あとでプロジェクトに含める-->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/push.js/1.0.7/push.min.js"></script>
-
 <!--リロードごとにリストから一件のみ表示-->
 <script type="text/javascript">
     // イベント情報リストを作成
@@ -27,7 +24,6 @@
           else
              titleStr = '情報取得に失敗しました。ページを再読み込みしてください。'
              linkStr = ''
-             location.reload();
           end
         -%>
           '<li ><%= titleStr %>  <a href="<%= p['event_url'] %>" target="_blank" id="link"><%= linkStr %> </a></li>',
